@@ -22,24 +22,20 @@ namespace ApiRest.Models
         public TimeSpan DepositeStartTime { get; set; }
         public TimeSpan DepositeEndTime { get; set; }
         public string DeliveryType { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long UserIdOrder { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long PickUpAddress { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long DepositAddress { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long BillingAddress { get; set; }
 
         public Address BillingAddressNavigation { get; set; }
         public Address DepositAddressNavigation { get; set; }
         public Address PickUpAddressNavigation { get; set; }
         public User UserIdOrderNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Letter> Letter { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Parcel> Parcel { get; set; }
     }
 }

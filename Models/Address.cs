@@ -19,14 +19,20 @@ namespace ApiRest.Models
         public string Street { get; set; }
         public string HouseNumber { get; set; }
         public string BoxNumber { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long LocalityIdAddress { get; set; }
 
         public Locality LocalityIdAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderBillingAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderDepositAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderPickUpAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<User> User { get; set; }
     }
 }

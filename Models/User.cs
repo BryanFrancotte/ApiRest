@@ -17,16 +17,14 @@ namespace ApiRest.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public DateTime? BirthDate { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
+        public DateTime? BirthDate { get; set; } // garder ou pas ?
         public long CodeRoleUser { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public long? AddressIdUser { get; set; }
 
         public Address AddressIdUserNavigation { get; set; }
         public Role CodeRoleUserNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> Order { get; set; }
     }
 }

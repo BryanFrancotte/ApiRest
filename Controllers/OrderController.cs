@@ -40,9 +40,9 @@ namespace ApiRest.Controllers
             }
         }
 
-        // PUT api/Order/AlterOrder
-        [HttpPut("AlterOrder")]
-        public IActionResult AlterOrder([FromBody]Order order){
+        // PUT api/Order/Edit
+        [HttpPut("Edit")]
+        public IActionResult EditOrder([FromBody]Order order){
             using(var context = new _1718_etu32607_DBContext()){
                 if(context.Order.Any(o => o.OrderNumber == order.OrderNumber)){
                     if(ModelState.IsValid){

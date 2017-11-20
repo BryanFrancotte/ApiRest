@@ -19,7 +19,7 @@ namespace ApiRest.Controllers
         }
 
         // GET api/Address/GetAllPickUpByUser/{userId}
-        [HttpGet("GetAllPickUpByUser/userId")]
+        [HttpGet("GetAllPickUpByUser/{userId}")]
         public IActionResult GetAllPickUpAddressByUser(int userId){
             using(var context = new _1718_etu32607_DBContext()){
                 if(context.User.Any(u => u.UserId == userId)){

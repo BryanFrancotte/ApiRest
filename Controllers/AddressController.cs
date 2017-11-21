@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ApiRest.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,12 @@ namespace ApiRest.Controllers
         public IActionResult GetAllPickUpAddressByUser(int userId){
             using(var context = new _1718_etu32607_DBContext()){
                 if(context.User.Any(u => u.UserId == userId)){
-                    var listAddress = context.Address.Include(a => a.LocalityIdAddressNavigation)
-                                                    .Where(a => a.AddressId == context.Order.Where(o => o.UserIdOrder == userId)
-                                                                                            .Single().PickUpAddress)
-                                                    .ToList();
+                    var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
+                    var listAddress = new List<Address>();
+                    foreach(Order order in listOrderFromUser){
+                        var address = context.Address.Single(a => a.AddressId == order.PickUpAddress);
+                        listAddress.Add(address);
+                    }
                     return Ok(listAddress);
                 }
                 return NotFound();
@@ -38,10 +41,12 @@ namespace ApiRest.Controllers
         public IActionResult GetAllDepositAddressByUser(int userId){
             using(var context = new _1718_etu32607_DBContext()){
                 if(context.User.Any(u => u.UserId == userId)){
-                    var listAddress = context.Address.Include(a => a.LocalityIdAddressNavigation)
-                                                    .Where(a => a.AddressId == context.Order.Where(o => o.UserIdOrder == userId)
-                                                                                            .Single().DepositAddress)
-                                                    .ToList();
+                    var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
+                    var listAddress = new List<Address>();
+                    foreach(Order order in listOrderFromUser){
+                        var address = context.Address.Single(a => a.AddressId == order.DepositAddress);
+                        listAddress.Add(address);
+                    }
                     return Ok(listAddress);
                 }
                 return NotFound();

@@ -27,7 +27,7 @@ namespace ApiRest.Controllers
                     var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
                     var listAddress = new List<Address>();
                     foreach(Order order in listOrderFromUser){
-                        var address = context.Address.Single(a => a.AddressId == order.PickUpAddress);
+                        var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
                         listAddress.Add(address);
                     }
                     return Ok(listAddress);
@@ -44,7 +44,7 @@ namespace ApiRest.Controllers
                     var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
                     var listAddress = new List<Address>();
                     foreach(Order order in listOrderFromUser){
-                        var address = context.Address.Single(a => a.AddressId == order.DepositAddress);
+                        var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
                         listAddress.Add(address);
                     }
                     return Ok(listAddress);

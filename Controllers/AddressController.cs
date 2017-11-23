@@ -24,12 +24,15 @@ namespace ApiRest.Controllers
         public IActionResult GetAllPickUpAddressByUser(int userId){
             using(var context = new _1718_etu32607_DBContext()){
                 if(context.User.Any(u => u.UserId == userId)){
-                    var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
-                    var listAddress = new List<Address>();
-                    foreach(Order order in listOrderFromUser){
-                        var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
-                        listAddress.Add(address);
-                    }
+                    var listAddress = context.Order
+                        .Include(a => a.PickUpAddressNavigation)
+                        .Where(o => o.UserIdOrder == userId)
+                        .Select(o=>o.PickUpAddress).ToList();
+                    // var listAddress = new List<Address>();
+                    // foreach(Order order in listOrderFromUser){
+                    //     var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
+                    //     listAddress.Add(address);
+                    // } => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
                     return Ok(listAddress);
                 }
                 return NotFound();

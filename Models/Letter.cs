@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace ApiRest.Models
 {
@@ -10,6 +8,7 @@ namespace ApiRest.Models
         public long LetterId { get; set; }
         public bool IsImportant { get; set; }
         public long OrderNumberLetter { get; set; }
+
         public Order OrderNumberLetterNavigation { get; set; }
     }
 }

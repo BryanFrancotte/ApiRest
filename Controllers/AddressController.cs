@@ -2,71 +2,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ApiRest.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiRest.Controllers
 {
     [Route("api/[controller]")]
-    public class AddressController : Controller
+    public class AddressController : BaseController
     {
+        public AddressController(UserManager<ApplicationUser> uMgr, CoursierWallonDBContext context) : base(uMgr, context)
+        {
+        }
+
         // GET api/Address/GetAll
         [HttpGet("GetAll")]
         public IActionResult GetAllAddress(){
-            using(var context = new _1718_etu32607_DBContext()){
-                var listAddress = context.Address.Include(a => a.LocalityIdAddressNavigation).ToList();
-                return Ok(listAddress);
-            }
+            var listAddress = Context.Address.Include(a => a.LocalityIdAddressNavigation).ToList();
+            return Ok(listAddress);
         }
 
         // GET api/Address/GetAllPickUpByUser/{userId}
         [HttpGet("GetAllPickUpByUser/{userId}")]
-        public IActionResult GetAllPickUpAddressByUser(int userId){
-            using(var context = new _1718_etu32607_DBContext()){
-                if(context.User.Any(u => u.UserId == userId)){
-                    var listAddress = context.Order
-                        .Include(a => a.PickUpAddressNavigation)
-                        .Where(o => o.UserIdOrder == userId)
-                        .Select(o=>o.PickUpAddress).ToList();
-                    // var listAddress = new List<Address>();
-                    // foreach(Order order in listOrderFromUser){
-                    //     var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
-                    //     listAddress.Add(address);
-                    // } => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
-                    return Ok(listAddress);
-                }
-                return NotFound();
+        public IActionResult GetAllPickUpAddressByUser(string userId){
+            if(Context.ApplicationUser.Any(u => u.Id == userId)){
+                var listAddress = Context.Order
+                    .Include(a => a.PickUpAddressNavigation)
+                    .Where(o => o.UserIdOrder == userId)
+                    .Select(o=>o.PickUpAddress).ToList();
+                // var listAddress = new List<Address>();
+                // foreach(Order order in listOrderFromUser){
+                //     var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
+                //     listAddress.Add(address);
+                // } => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
+                return Ok(listAddress);
             }
+            return NotFound();
         }
 
         // GET api/Address/GetAllDepositByUser/{userId}
         [HttpGet("GetAllDepositByUser/{userId}")]
-        public IActionResult GetAllDepositAddressByUser(int userId){
-            using(var context = new _1718_etu32607_DBContext()){
-                if(context.User.Any(u => u.UserId == userId)){
-                    var listOrderFromUser = context.Order.Where(o => o.UserIdOrder == userId).ToList();
-                    var listAddress = new List<Address>();
-                    foreach(Order order in listOrderFromUser){
-                        var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
-                        listAddress.Add(address);
-                    }
-                    return Ok(listAddress);
+        public IActionResult GetAllDepositAddressByUser(string userId){
+            if(Context.ApplicationUser.Any(u => u.Id == userId)){
+                var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId).ToList();
+                var listAddress = new List<Address>();
+                foreach(Order order in listOrderFromUser){
+                    var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
+                    listAddress.Add(address);
                 }
-                return NotFound();
+                return Ok(listAddress);
             }
+            return NotFound();
         }
 
         // PUT api/Address/Add
         [HttpPut("Add")]
         public IActionResult AddAddress([FromBody]Address address){
-            using(var context = new _1718_etu32607_DBContext()){
-                if(ModelState.IsValid){
-                    context.Address.Add(address);
-                    context.SaveChanges();
-                    return Ok();
-                }
-                return BadRequest();
+            if(ModelState.IsValid){
+                Context.Address.Add(address);
+                Context.SaveChanges();
+                return Ok();
             }
+            return BadRequest();
         }
     }
 }

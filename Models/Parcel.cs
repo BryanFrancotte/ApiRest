@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace ApiRest.Models
 {
@@ -10,8 +8,7 @@ namespace ApiRest.Models
         public long ParcelId { get; set; }
         public string ParcelType { get; set; }
         public long OrderNumberParcel { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
+
         public Order OrderNumberParcelNavigation { get; set; }
     }
 }

@@ -19,18 +19,20 @@ namespace ApiRest.Models
         public TimeSpan PickUpStartTime { get; set; }
         public TimeSpan PickUpEndTime { get; set; }
         public DateTime DepositDate { get; set; }
-        public TimeSpan DepositeStartTime { get; set; }
-        public TimeSpan DepositeEndTime { get; set; }
+        public TimeSpan DepositStartTime { get; set; }
+        public TimeSpan DepositEndTime { get; set; }
         public string DeliveryType { get; set; }
-        public long UserIdOrder { get; set; }
+        public string UserIdOrder { get; set; }
+        public string CoursierIdOrder { get; set; }
         public long PickUpAddress { get; set; }
         public long DepositAddress { get; set; }
         public long BillingAddress { get; set; }
 
         public Address BillingAddressNavigation { get; set; }
+        public ApplicationUser CoursierIdOrderNavigation { get; set; }
         public Address DepositAddressNavigation { get; set; }
         public Address PickUpAddressNavigation { get; set; }
-        public User UserIdOrderNavigation { get; set; }
+        public ApplicationUser UserIdOrderNavigation { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]
         public ICollection<Letter> Letter { get; set; }

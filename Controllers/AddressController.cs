@@ -25,7 +25,7 @@ namespace ApiRest.Controllers
         // GET api/Address/GetAllPickUpByUser/{userId}
         [HttpGet("GetAllPickUpByUser/{userId}")]
         public IActionResult GetAllPickUpAddressByUser(string userId){
-            if(Context.ApplicationUser.Any(u => u.Id == userId)){
+            if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listAddress = Context.Order
                     .Include(a => a.PickUpAddressNavigation)
                     .Where(o => o.UserIdOrder == userId)
@@ -43,7 +43,7 @@ namespace ApiRest.Controllers
         // GET api/Address/GetAllDepositByUser/{userId}
         [HttpGet("GetAllDepositByUser/{userId}")]
         public IActionResult GetAllDepositAddressByUser(string userId){
-            if(Context.ApplicationUser.Any(u => u.Id == userId)){
+            if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId).ToList();
                 var listAddress = new List<Address>();
                 foreach(Order order in listOrderFromUser){

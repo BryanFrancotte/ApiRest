@@ -7,7 +7,7 @@ namespace ApiRest.Models
     {
         public Address()
         {
-            ApplicationUser = new HashSet<ApplicationUser>();
+            AspNetUsers = new HashSet<ApplicationUser>();
             OrderBillingAddressNavigation = new HashSet<Order>();
             OrderDepositAddressNavigation = new HashSet<Order>();
             OrderPickUpAddressNavigation = new HashSet<Order>();

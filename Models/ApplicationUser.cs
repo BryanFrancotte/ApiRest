@@ -9,6 +9,7 @@ namespace ApiRest.Models
     public class ApplicationUser : IdentityUser
     {
         public DateTime? BirthDate { get; set; }
+        public byte[] VerCol{get; set;}
         public long? AddressIdUser { get; set; }
         public Address AddressIdUserNavigation { get; set; }
         [JsonIgnore]

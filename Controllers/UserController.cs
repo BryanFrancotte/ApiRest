@@ -34,7 +34,7 @@ namespace ApiRest.Controllers
         // GET api/User/GetAll
         [HttpGet("GetAll")]
         public IActionResult GetAllUser(){
-            var listUser = Context.ApplicationUser.Include(u => u.AddressIdUserNavigation).ThenInclude(a => a.LocalityIdAddressNavigation).ToList();
+            var listUser = Context.AspNetUsers.Include(u => u.AddressIdUserNavigation).ThenInclude(a => a.LocalityIdAddressNavigation).ToList();
             return Ok(listUser);
         }
 
@@ -50,7 +50,7 @@ namespace ApiRest.Controllers
         // GET api/User/GetById/{userId}
         [HttpGet("GetById/{userId}")]
         public IActionResult GetUserById(string userId){
-            ApplicationUser user = Context.ApplicationUser.SingleOrDefault(u => u.Id.CompareTo(userId) == 0);
+            ApplicationUser user = Context.AspNetUsers.SingleOrDefault(u => u.Id.CompareTo(userId) == 0);
             if(user != null){
                 return Ok(user);
             }
@@ -61,8 +61,8 @@ namespace ApiRest.Controllers
         [HttpPost("Add")]
         public IActionResult AddUser([FromBody]ApplicationUser user){
             if(ModelState.IsValid){
-                if(!Context.ApplicationUser.Any(u => u.Email.ToLower().CompareTo(user.Email.ToLower())==0)){
-                    Context.ApplicationUser.Add(user);
+                if(!Context.AspNetUsers.Any(u => u.Email.ToLower().CompareTo(user.Email.ToLower())==0)){
+                    Context.AspNetUsers.Add(user);
                     Context.SaveChanges();
                     return Ok();
                 }
@@ -74,7 +74,7 @@ namespace ApiRest.Controllers
         [HttpPut("Edit")]
         public IActionResult EditUser([FromBody]ApplicationUser user){
             if(ModelState.IsValid){
-                if(Context.ApplicationUser.Any(u => u.Id.CompareTo(user.Id) == 0)){
+                if(Context.AspNetUsers.Any(u => u.Id.CompareTo(user.Id) == 0)){
                     Context.Attach(user);
                     Context.Entry(user).State = EntityState.Modified;
                     try{

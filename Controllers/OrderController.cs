@@ -31,7 +31,7 @@ namespace ApiRest.Controllers
         // GET api/Order/GetAllByUser/{id}
         [HttpGet("GetAllByUser/{userId}")]
         public IActionResult GetAllOrderByUser(string userId){
-            if(Context.ApplicationUser.Any(u => u.Id == userId)){
+            if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listOrder = Context.Order.Where(o => o.UserIdOrder == userId)
                                                 .Include(o => o.BillingAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
                                                 .Include(o => o.PickUpAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)

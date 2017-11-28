@@ -10,8 +10,9 @@ namespace ApiRest.Models
         {
 
         }
+
         public virtual DbSet<Address> Address { get; set; }
-        public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
         public virtual DbSet<Letter> Letter { get; set; }
         public virtual DbSet<Locality> Locality { get; set; }
         public virtual DbSet<Order> Order { get; set; }
@@ -71,6 +72,10 @@ namespace ApiRest.Models
 
                 entity.Property(e => e.UserName).HasMaxLength(256);
 
+                entity.Property(e => e.VerCol)
+                    .IsRequired()
+                    .IsRowVersion();
+
                 entity.HasOne(d => d.AddressIdUserNavigation)
                     .WithMany(p => p.AspNetUsers)
                     .HasForeignKey(d => d.AddressIdUser)
@@ -107,13 +112,11 @@ namespace ApiRest.Models
                     .IsRequired()
                     .HasMaxLength(450);
 
-                entity.Property(e => e.DeliveryType)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
                 entity.Property(e => e.DepositDate).HasColumnType("date");
 
                 entity.Property(e => e.PickUpDate).HasColumnType("date");
+
+                entity.Property(e => e.Price).HasColumnType("decimal(3, 2)");
 
                 entity.Property(e => e.State)
                     .IsRequired()
@@ -122,6 +125,10 @@ namespace ApiRest.Models
                 entity.Property(e => e.UserIdOrder)
                     .IsRequired()
                     .HasMaxLength(450);
+
+                entity.Property(e => e.VerCol)
+                    .IsRequired()
+                    .IsRowVersion();
 
                 entity.HasOne(d => d.BillingAddressNavigation)
                     .WithMany(p => p.OrderBillingAddressNavigation)
@@ -157,10 +164,6 @@ namespace ApiRest.Models
             modelBuilder.Entity<Parcel>(entity =>
             {
                 entity.ToTable("PARCEL");
-
-                entity.Property(e => e.ParcelType)
-                    .IsRequired()
-                    .HasMaxLength(2);
 
                 entity.HasOne(d => d.OrderNumberParcelNavigation)
                     .WithMany(p => p.Parcel)

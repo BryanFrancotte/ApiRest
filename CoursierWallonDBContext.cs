@@ -4,30 +4,35 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ApiRest.Models
 {
-    public partial class _1718_etu32607_DBContext : DbContext
+    public partial class CoursierWallonDBContext : Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityDbContext<ApplicationUser>
     {
+        public CoursierWallonDBContext(DbContextOptions<CoursierWallonDBContext> options) : base(options)
+        {
+            
+        }
         public virtual DbSet<Address> Address { get; set; }
+        public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
         public virtual DbSet<Letter> Letter { get; set; }
         public virtual DbSet<Locality> Locality { get; set; }
         public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<Parcel> Parcel { get; set; }
-        public virtual DbSet<Role> Role { get; set; }
-        public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=vm-sql2.iesn.Be\Stu3ig;Database=1718_etu32607_DB;User Id=1718_etu32607;Password=SeoNY6_00np;");
+                optionsBuilder.UseSqlServer(@"Server=tcp:coursierwallon.database.windows.net,1433;Initial Catalog=CoursierWallonDB;Persist Security Info=False;User ID=BryanAdmin;Password=Yasmine1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+             base.OnModelCreating(modelBuilder);
+             
             modelBuilder.Entity<Address>(entity =>
             {
-                entity.ToTable("ADDRESS", "SMART_CITY");
+                entity.ToTable("ADDRESS");
 
                 entity.Property(e => e.BoxNumber).HasMaxLength(5);
 
@@ -46,9 +51,41 @@ namespace ApiRest.Models
                     .HasConstraintName("FK_LOCALITY");
             });
 
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.HasIndex(e => e.NormalizedEmail)
+                    .HasName("EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName)
+                    .HasName("UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.BirthDate).HasColumnType("date");
+
+                entity.Property(e => e.Email).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.UserName).HasMaxLength(256);
+
+                entity.Property(e => e.VerCol)
+                    .IsRequired()
+                    .IsRowVersion();
+
+                entity.HasOne(d => d.AddressIdUserNavigation)
+                    .WithMany(p => p.AspNetUsers)
+                    .HasForeignKey(d => d.AddressIdUser)
+                    .HasConstraintName("FK_ADDRESS");
+            });
+
             modelBuilder.Entity<Letter>(entity =>
             {
-                entity.ToTable("LETTER", "SMART_CITY");
+                entity.ToTable("LETTER");
 
                 entity.HasOne(d => d.OrderNumberLetterNavigation)
                     .WithMany(p => p.Letter)
@@ -59,7 +96,7 @@ namespace ApiRest.Models
 
             modelBuilder.Entity<Locality>(entity =>
             {
-                entity.ToTable("LOCALITY", "SMART_CITY");
+                entity.ToTable("LOCALITY");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -70,25 +107,41 @@ namespace ApiRest.Models
             {
                 entity.HasKey(e => e.OrderNumber);
 
-                entity.ToTable("ORDER", "SMART_CITY");
+                entity.ToTable("ORDER");
 
-                entity.Property(e => e.DeliveryType)
+                entity.Property(e => e.CoursierIdOrder)
                     .IsRequired()
-                    .HasMaxLength(30);
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.DepositDate).HasColumnType("date");
 
                 entity.Property(e => e.PickUpDate).HasColumnType("date");
 
+                entity.Property(e => e.Price).HasColumnType("decimal(3, 2)");
+
                 entity.Property(e => e.State)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(40);
+
+                entity.Property(e => e.UserIdOrder)
+                    .IsRequired()
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.VerCol)
+                    .IsRequired()
+                    .IsRowVersion();
 
                 entity.HasOne(d => d.BillingAddressNavigation)
                     .WithMany(p => p.OrderBillingAddressNavigation)
                     .HasForeignKey(d => d.BillingAddress)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_BILLING_ADDRESS");
+
+                entity.HasOne(d => d.CoursierIdOrderNavigation)
+                    .WithMany(p => p.OrderCoursierIdOrderNavigation)
+                    .HasForeignKey(d => d.CoursierIdOrder)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_COURSIER");
 
                 entity.HasOne(d => d.DepositAddressNavigation)
                     .WithMany(p => p.OrderDepositAddressNavigation)
@@ -103,7 +156,7 @@ namespace ApiRest.Models
                     .HasConstraintName("FK_PICK_UP_ADDRESS");
 
                 entity.HasOne(d => d.UserIdOrderNavigation)
-                    .WithMany(p => p.Order)
+                    .WithMany(p => p.OrderUserIdOrderNavigation)
                     .HasForeignKey(d => d.UserIdOrder)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER");
@@ -111,11 +164,7 @@ namespace ApiRest.Models
 
             modelBuilder.Entity<Parcel>(entity =>
             {
-                entity.ToTable("PARCEL", "SMART_CITY");
-
-                entity.Property(e => e.ParcelType)
-                    .IsRequired()
-                    .HasMaxLength(2);
+                entity.ToTable("PARCEL");
 
                 entity.HasOne(d => d.OrderNumberParcelNavigation)
                     .WithMany(p => p.Parcel)
@@ -123,49 +172,7 @@ namespace ApiRest.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ORDER_PARCEL");
             });
-
-            modelBuilder.Entity<Role>(entity =>
-            {
-                entity.HasKey(e => e.CodeRole);
-
-                entity.ToTable("ROLE", "SMART_CITY");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Permission).HasMaxLength(255);
-            });
-
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("USER", "SMART_CITY");
-
-                entity.Property(e => e.BirthDate).HasColumnType("date");
-
-                entity.Property(e => e.Email)
-                    .IsRequired()
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.FirstName).HasMaxLength(50);
-
-                entity.Property(e => e.LastName).HasMaxLength(50);
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
-                entity.HasOne(d => d.AddressIdUserNavigation)
-                    .WithMany(p => p.User)
-                    .HasForeignKey(d => d.AddressIdUser)
-                    .HasConstraintName("FK_ADDRESS");
-
-                entity.HasOne(d => d.CodeRoleUserNavigation)
-                    .WithMany(p => p.User)
-                    .HasForeignKey(d => d.CodeRoleUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ROLE");
-            });
+           
         }
     }
 }

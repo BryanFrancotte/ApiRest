@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace ApiRest.Models
 {
@@ -9,10 +7,10 @@ namespace ApiRest.Models
     {
         public Address()
         {
+            AspNetUsers = new HashSet<ApplicationUser>();
             OrderBillingAddressNavigation = new HashSet<Order>();
             OrderDepositAddressNavigation = new HashSet<Order>();
             OrderPickUpAddressNavigation = new HashSet<Order>();
-            User = new HashSet<User>();
         }
 
         public long AddressId { get; set; }
@@ -22,17 +20,9 @@ namespace ApiRest.Models
         public long LocalityIdAddress { get; set; }
 
         public Locality LocalityIdAddressNavigation { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
+        public ICollection<ApplicationUser> AspNetUsers { get; set; }
         public ICollection<Order> OrderBillingAddressNavigation { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public ICollection<Order> OrderDepositAddressNavigation { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public ICollection<Order> OrderPickUpAddressNavigation { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
-        public ICollection<User> User { get; set; }
     }
 }

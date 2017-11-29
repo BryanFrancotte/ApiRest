@@ -28,6 +28,8 @@ namespace ApiRest.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+             base.OnModelCreating(modelBuilder);
+             
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("ADDRESS");
@@ -170,7 +172,7 @@ namespace ApiRest.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ORDER_PARCEL");
             });
-            base.OnModelCreating(modelBuilder);
+           
         }
     }
 }

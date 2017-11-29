@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ApiRest.DTO;
 using ApiRest.Models;
@@ -10,15 +11,16 @@ namespace ApiRest.Controllers
     public class AccountController : Controller
     {
         private UserManager<ApplicationUser> _userManager;
-        public AccountController(UserManager<ApplicationUser> userManager)
+        private CoursierWallonDBContext _context;
+        public AccountController(UserManager<ApplicationUser> userManager, CoursierWallonDBContext context)
         {
             this._userManager=userManager;
+            this._context=context;
         }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]NewUserDTO dto)
         {
-            
                 var newUser=new ApplicationUser{
                         UserName=dto.UserName,
                         Email = dto.Email

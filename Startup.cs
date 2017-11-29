@@ -33,7 +33,7 @@ namespace ApiRest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CoursierWallonDBContext>(options =>
-                 options.UseSqlServer(@"Server=vm-sql2.iesn.Be\Stu3ig;Database=1718_etu32607_DB_Identity;User Id=1718_etu32607;Password=SeoNY6_00np;"));
+                 options.UseSqlServer(@"Server=tcp:coursierwallon.database.windows.net,1433;Initial Catalog=CoursierWallonDB;Persist Security Info=False;User ID=BryanAdmin;Password=Yasmine1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
             services
                 .AddIdentity<ApplicationUser, IdentityRole>()

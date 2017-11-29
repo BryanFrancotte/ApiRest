@@ -42,6 +42,20 @@ namespace ApiRest.Controllers
             return NotFound();
         }
 
+        // GET api/Order/GetAllStatedByCoursierOrderedByPickUpTime/{id}?{state}
+        //[HttpGet("GetAllStatedByCoursierOrderedByPickUpTime/{userId:string}/{state:string}")] on peut faire ça aussi mais deux slash alors 
+        [HttpGet("GetAllStatedByCoursierOrderedByPickUpTime/{userId:string}")]
+        public IActionResult GetAllStatedOrderByCoursierOrderedByPickUpTime(string userId, string state){
+            if(Context.AspNetUsers.Any(u => u.Id == userId)){
+                var listOrder = Context.Order.Where(o => o.CoursierIdOrder == userId && o.State == state)
+                                                .Include(o => o.PickUpAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
+                                                .Include(o => o.DepositAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
+                                                .Include(o => o.UserIdOrderNavigation)
+                                                .ToList();
+            }
+            return NotFound();
+        }
+
         // PUT api/Order/Edit
         [HttpPut("Edit")]
         public IActionResult EditOrder([FromBody]Order order){

@@ -48,27 +48,14 @@ namespace ApiRest.Controllers
         // }
 
         // GET api/User/GetById/{userId}
-        [HttpGet("GetById/{userId}")]
-        public IActionResult GetUserById(string userId){
-            ApplicationUser user = Context.AspNetUsers.SingleOrDefault(u => u.Id.CompareTo(userId) == 0);
-            if(user != null){
-                return Ok(user);
-            }
-            return NotFound();
-        }
-
-        // POST api/User/Add
-        [HttpPost("Add")]
-        public IActionResult AddUser([FromBody]ApplicationUser user){
-            if(ModelState.IsValid){
-                if(!Context.AspNetUsers.Any(u => u.Email.ToLower().CompareTo(user.Email.ToLower())==0)){
-                    Context.AspNetUsers.Add(user);
-                    Context.SaveChanges();
-                    return Ok();
-                }
-            }
-            return BadRequest();
-        }
+        // [HttpGet("GetById/{userId}")]
+        // public IActionResult GetUserById(string userId){
+        //     ApplicationUser user = Context.AspNetUsers.SingleOrDefault(u => u.Id.CompareTo(userId) == 0);
+        //     if(user != null){
+        //         return Ok(user);
+        //     }
+        //     return NotFound();
+        // }
 
         // PUT api/User/Edit
         [HttpPut("Edit")]

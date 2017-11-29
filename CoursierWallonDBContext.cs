@@ -8,9 +8,8 @@ namespace ApiRest.Models
     {
         public CoursierWallonDBContext(DbContextOptions<CoursierWallonDBContext> options) : base(options)
         {
-
+            
         }
-
         public virtual DbSet<Address> Address { get; set; }
         public virtual DbSet<ApplicationUser> AspNetUsers { get; set; }
         public virtual DbSet<Letter> Letter { get; set; }

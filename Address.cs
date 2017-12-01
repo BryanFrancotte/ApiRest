@@ -9,24 +9,31 @@ namespace ApiRest.Models
     {
         public Address()
         {
+            AspNetUsers = new HashSet<ApplicationUser>();
             OrderBillingAddressNavigation = new HashSet<Order>();
             OrderDepositAddressNavigation = new HashSet<Order>();
             OrderPickUpAddressNavigation = new HashSet<Order>();
-            User = new HashSet<User>();
         }
 
         public long AddressId { get; set; }
         public string Street { get; set; }
         public string HouseNumber { get; set; }
         public string BoxNumber { get; set; }
+        public long LocalityIdAddress { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]
-        public long LocalityIdAddress { get; set; }
-
         public Locality LocalityIdAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public ICollection<ApplicationUser> AspNetUsers { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderBillingAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderDepositAddressNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Order> OrderPickUpAddressNavigation { get; set; }
-        public ICollection<User> User { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace ApiRest.Controllers
             return NotFound();
         }
 
-        // POST api/Address/Add
+        // POST api/Address/addressExists
         [HttpPost("addressExists")]
         public IActionResult addressExists([FromBody]Address newAddress){
             if(ModelState.IsValid){

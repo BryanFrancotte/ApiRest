@@ -29,7 +29,7 @@ namespace ApiRest.Controllers
                 var listAddress = Context.Order
                     .Include(a => a.PickUpAddressNavigation)
                     .Where(o => o.UserIdOrder == userId)
-                    .Select(o=>o.PickUpAddress).ToList();
+                    .Select(o=>o.PickUpAddressNavigation).ToList();
                 // var listAddress = new List<Address>();
                 // foreach(Order order in listOrderFromUser){
                 //     var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);

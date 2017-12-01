@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace ApiRest.Models
 {
@@ -35,7 +37,11 @@ namespace ApiRest.Models
         public Address DepositAddressNavigation { get; set; }
         public Address PickUpAddressNavigation { get; set; }
         public ApplicationUser UserIdOrderNavigation { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Letter> Letter { get; set; }
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ICollection<Parcel> Parcel { get; set; }
     }
 }

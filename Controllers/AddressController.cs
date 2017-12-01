@@ -26,16 +26,18 @@ namespace ApiRest.Controllers
         [HttpGet("GetAllPickUpByUser/{userId}")]
         public IActionResult GetAllPickUpAddressByUser(string userId){
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
-                var listAddress = Context.Order
-                    .Include(a => a.PickUpAddressNavigation)
-                    .ThenInclude(a => a.LocalityIdAddressNavigation)
-                    .Where(o => o.UserIdOrder == userId)
-                    .Select(o=>o.PickUpAddressNavigation).ToList();
-                // var listAddress = new List<Address>();
-                // foreach(Order order in listOrderFromUser){
-                //     var address = context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
-                //     listAddress.Add(address);
-                // } => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
+                // var listAddress = Context.Order
+                //     .Include(a => a.PickUpAddressNavigation)
+                //     .Where(o => o.UserIdOrder == userId)
+                //     .Select(o=>o.PickUpAddressNavigation)
+                //     .Select(a => a.LocalityIdAddressNavigation)
+                //     .ToList();
+                var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId);
+                var listAddress = new List<Address>();
+                foreach(Order order in listOrderFromUser){
+                    var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
+                    listAddress.Add(address);
+                }// => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
                 return Ok(listAddress);
             }
             return NotFound();
@@ -45,11 +47,12 @@ namespace ApiRest.Controllers
         [HttpGet("GetAllDepositByUser/{userId}")]
         public IActionResult GetAllDepositAddressByUser(string userId){
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
-                var listAddress = Context.Order
-                    .Include(a => a.PickUpAddressNavigation)
-                    .ThenInclude(a => a.LocalityIdAddressNavigation)
-                    .Where(o => o.UserIdOrder == userId)
-                    .Select(o=>o.PickUpAddress).ToList();
+                var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId);
+                var listAddress = new List<Address>();
+                foreach(Order order in listOrderFromUser){
+                    var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
+                    listAddress.Add(address);
+                }// => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
                 return Ok(listAddress);
             }
             return NotFound();

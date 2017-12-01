@@ -28,6 +28,7 @@ namespace ApiRest.Controllers
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listAddress = Context.Order
                     .Include(a => a.PickUpAddressNavigation)
+                    .ThenInclude(a => a.LocalityIdAddressNavigation)
                     .Where(o => o.UserIdOrder == userId)
                     .Select(o=>o.PickUpAddressNavigation).ToList();
                 // var listAddress = new List<Address>();
@@ -44,24 +45,36 @@ namespace ApiRest.Controllers
         [HttpGet("GetAllDepositByUser/{userId}")]
         public IActionResult GetAllDepositAddressByUser(string userId){
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
-                var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId).ToList();
-                var listAddress = new List<Address>();
-                foreach(Order order in listOrderFromUser){
-                    var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
-                    listAddress.Add(address);
-                }
+                var listAddress = Context.Order
+                    .Include(a => a.PickUpAddressNavigation)
+                    .ThenInclude(a => a.LocalityIdAddressNavigation)
+                    .Where(o => o.UserIdOrder == userId)
+                    .Select(o=>o.PickUpAddress).ToList();
                 return Ok(listAddress);
             }
             return NotFound();
         }
 
-        // PUT api/Address/Add
-        [HttpPut("Add")]
-        public IActionResult AddAddress([FromBody]Address address){
+        // POST api/Address/addressExists bouger et le mettre en business
+        [HttpPost("addressExists")]
+        public IActionResult addressExists([FromBody]Address newAddress){
             if(ModelState.IsValid){
-                Context.Address.Add(address);
-                Context.SaveChanges();
-                return Ok();
+                Address address = Context.Address.SingleOrDefault(a => String.Equals(a.Street, newAddress.Street, StringComparison.OrdinalIgnoreCase) 
+                                                            && String.Equals(a.HouseNumber, newAddress.HouseNumber, StringComparison.OrdinalIgnoreCase) 
+                                                            && String.Equals(a.BoxNumber, newAddress.BoxNumber, StringComparison.OrdinalIgnoreCase)
+                                                            && String.Equals(a.LocalityIdAddressNavigation.Name, newAddress.LocalityIdAddressNavigation.Name, StringComparison.OrdinalIgnoreCase) 
+                                                            && a.LocalityIdAddressNavigation.PostalCode == newAddress.LocalityIdAddressNavigation.PostalCode);
+                if(address != null){
+                    return Ok(address);
+                }else {
+                    Locality locality = Context.Locality.SingleOrDefault(l => String.Equals(l.Name, newAddress.LocalityIdAddressNavigation.Name, StringComparison.OrdinalIgnoreCase)
+                                                                        && l.PostalCode == newAddress.LocalityIdAddressNavigation.PostalCode);
+                    if(locality != null){
+                        newAddress.LocalityIdAddress = locality.LocalityId;
+                        newAddress.LocalityIdAddressNavigation = null;
+                    }
+                    return Ok(newAddress);
+                }
             }
             return BadRequest();
         }

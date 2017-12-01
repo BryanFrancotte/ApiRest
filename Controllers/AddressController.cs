@@ -28,6 +28,7 @@ namespace ApiRest.Controllers
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listAddress = Context.Order
                     .Include(a => a.PickUpAddressNavigation)
+                    .ThenInclude(a => a.LocalityIdAddressNavigation)
                     .Where(o => o.UserIdOrder == userId)
                     .Select(o=>o.PickUpAddress).ToList();
                 // var listAddress = new List<Address>();
@@ -44,18 +45,17 @@ namespace ApiRest.Controllers
         [HttpGet("GetAllDepositByUser/{userId}")]
         public IActionResult GetAllDepositAddressByUser(string userId){
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
-                var listOrderFromUser = Context.Order.Where(o => o.UserIdOrder == userId).ToList();
-                var listAddress = new List<Address>();
-                foreach(Order order in listOrderFromUser){
-                    var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
-                    listAddress.Add(address);
-                }
+                var listAddress = Context.Order
+                    .Include(a => a.PickUpAddressNavigation)
+                    .ThenInclude(a => a.LocalityIdAddressNavigation)
+                    .Where(o => o.UserIdOrder == userId)
+                    .Select(o=>o.PickUpAddress).ToList();
                 return Ok(listAddress);
             }
             return NotFound();
         }
 
-        // POST api/Address/addressExists
+        // POST api/Address/addressExists bouger et le mettre en business
         [HttpPost("addressExists")]
         public IActionResult addressExists([FromBody]Address newAddress){
             if(ModelState.IsValid){

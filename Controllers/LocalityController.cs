@@ -22,7 +22,7 @@ namespace ApiRest.Controllers
         }
 
         // PUT api/Locality/Add
-        [HttpPut("Add")]
+        [HttpPost("Add")]
         public IActionResult AddLocality([FromBody]Locality locality){
             if(ModelState.IsValid){
                 Context.Locality.Add(locality);

@@ -44,7 +44,7 @@ namespace ApiRest.Controllers
 
         // GET api/Order/GetAllStatedByCoursierOrderedByPickUpTime/{id}?{state}
         //[HttpGet("GetAllStatedByCoursierOrderedByPickUpTime/{userId:string}/{state:string}")] on peut faire ça aussi mais deux slash alors 
-        [HttpGet("GetAllStatedByCoursierOrderedByPickUpTime/{userId:string}")]
+        [HttpGet("GetAllStatedByCoursierOrderedByPickUpTime/{userId}")]
         public IActionResult GetAllStatedOrderByCoursierOrderedByPickUpTime(string userId, string state){
             if(Context.AspNetUsers.Any(u => u.Id == userId)){
                 var listOrder = Context.Order.Where(o => o.CoursierIdOrder == userId && o.State == state)
@@ -72,6 +72,16 @@ namespace ApiRest.Controllers
                 }
             }
             return NotFound();
+        }
+
+        // POST api/Order/Add
+        [HttpPost("Add")]
+        public IActionResult AddOrder([FromBody]Order newOrder){
+            if(ModelState.IsValid){
+                Context.Order.Add(newOrder);
+                Context.SaveChanges();
+            }
+            return BadRequest();
         }
     }
 }

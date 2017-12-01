@@ -55,13 +55,26 @@ namespace ApiRest.Controllers
             return NotFound();
         }
 
-        // PUT api/Address/Add
-        [HttpPut("Add")]
-        public IActionResult AddAddress([FromBody]Address address){
+        // POST api/Address/Add
+        [HttpPost("addressExists")]
+        public IActionResult addressExists([FromBody]Address newAddress){
             if(ModelState.IsValid){
-                Context.Address.Add(address);
-                Context.SaveChanges();
-                return Ok();
+                Address address = Context.Address.SingleOrDefault(a => String.Equals(a.Street, newAddress.Street, StringComparison.OrdinalIgnoreCase) 
+                                                            && String.Equals(a.HouseNumber, newAddress.HouseNumber, StringComparison.OrdinalIgnoreCase) 
+                                                            && String.Equals(a.BoxNumber, newAddress.BoxNumber, StringComparison.OrdinalIgnoreCase)
+                                                            && String.Equals(a.LocalityIdAddressNavigation.Name, newAddress.LocalityIdAddressNavigation.Name, StringComparison.OrdinalIgnoreCase) 
+                                                            && a.LocalityIdAddressNavigation.PostalCode == newAddress.LocalityIdAddressNavigation.PostalCode);
+                if(address != null){
+                    return Ok(address);
+                }else {
+                    Locality locality = Context.Locality.SingleOrDefault(l => String.Equals(l.Name, newAddress.LocalityIdAddressNavigation.Name, StringComparison.OrdinalIgnoreCase)
+                                                                        && l.PostalCode == newAddress.LocalityIdAddressNavigation.PostalCode);
+                    if(locality != null){
+                        newAddress.LocalityIdAddress = locality.LocalityId;
+                        newAddress.LocalityIdAddressNavigation = null;
+                    }
+                    return Ok(newAddress);
+                }
             }
             return BadRequest();
         }

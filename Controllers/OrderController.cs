@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Net;
 using ApiRest.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiRest.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class OrderController : BaseController
     {

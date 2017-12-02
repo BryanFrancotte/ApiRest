@@ -20,8 +20,7 @@ namespace ApiRest.Models
         public string HouseNumber { get; set; }
         public string BoxNumber { get; set; }
         public long LocalityIdAddress { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
+
         public Locality LocalityIdAddressNavigation { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]

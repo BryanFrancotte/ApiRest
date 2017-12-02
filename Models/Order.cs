@@ -16,13 +16,13 @@ namespace ApiRest.Models
         public long OrderNumber { get; set; }
         public string State { get; set; }
         public DateTime PickUpDate { get; set; }
-        public TimeSpan PickUpStartTime { get; set; }
-        public TimeSpan PickUpEndTime { get; set; }
-        public TimeSpan? PickUpTime { get; set; }
+        public string PickUpStartTime { get; set; }
+        public string PickUpEndTime { get; set; }
+        public string PickUpTime { get; set; }
         public DateTime DepositDate { get; set; }
-        public TimeSpan DepositStartTime { get; set; }
-        public TimeSpan DepositEndTime { get; set; }
-        public TimeSpan? DepositTime { get; set; }
+        public string DepositStartTime { get; set; }
+        public string DepositEndTime { get; set; }
+        public string DepositTime { get; set; }
         public int DeliveryType { get; set; }
         public decimal? Price { get; set; }
         public string UserIdOrder { get; set; }
@@ -37,11 +37,7 @@ namespace ApiRest.Models
         public Address DepositAddressNavigation { get; set; }
         public Address PickUpAddressNavigation { get; set; }
         public ApplicationUser UserIdOrderNavigation { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public ICollection<Letter> Letter { get; set; }
-        [JsonIgnore]
-        [IgnoreDataMember]
         public ICollection<Parcel> Parcel { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using ApiRest.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,12 @@ namespace ApiRest.Controllers
         public ParcelController(UserManager<ApplicationUser> uMgr, CoursierWallonDBContext context) 
             : base(uMgr, context)
         {
+        }
+
+        [HttpGet("GetAll")]
+        public IActionResult GetAllParcel(){
+            var listParcel = Context.Parcel.ToList();
+            return Ok(listParcel);
         }
 
         // POST api/Parcel/Add

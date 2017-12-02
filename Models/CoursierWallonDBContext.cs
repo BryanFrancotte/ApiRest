@@ -28,8 +28,7 @@ namespace ApiRest.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-             base.OnModelCreating(modelBuilder);
-             
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("ADDRESS");
@@ -109,13 +108,39 @@ namespace ApiRest.Models
 
                 entity.ToTable("ORDER");
 
-                entity.Property(e => e.CoursierIdOrder)
-                    .IsRequired()
-                    .HasMaxLength(450);
+                entity.Property(e => e.CoursierIdOrder).HasMaxLength(450);
 
                 entity.Property(e => e.DepositDate).HasColumnType("date");
 
+                entity.Property(e => e.DepositEndTime)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DepositStartTime)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DepositTime)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.PickUpDate).HasColumnType("date");
+
+                entity.Property(e => e.PickUpEndTime)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PickUpStartTime)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PickUpTime)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Price).HasColumnType("decimal(3, 2)");
 
@@ -140,7 +165,6 @@ namespace ApiRest.Models
                 entity.HasOne(d => d.CoursierIdOrderNavigation)
                     .WithMany(p => p.OrderCoursierIdOrderNavigation)
                     .HasForeignKey(d => d.CoursierIdOrder)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_COURSIER");
 
                 entity.HasOne(d => d.DepositAddressNavigation)
@@ -172,7 +196,6 @@ namespace ApiRest.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ORDER_PARCEL");
             });
-           
         }
     }
 }

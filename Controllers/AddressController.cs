@@ -38,7 +38,7 @@ namespace ApiRest.Controllers
                     var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.PickUpAddress);
                     listAddress.Add(address);
                 }// => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
-                return Ok(listAddress);
+                return Ok(listAddress.Distinct());
             }
             return NotFound();
         }
@@ -53,7 +53,7 @@ namespace ApiRest.Controllers
                     var address = Context.Address.Include(a => a.LocalityIdAddressNavigation).Single(a => a.AddressId == order.DepositAddress);
                     listAddress.Add(address);
                 }// => pas bon car je fais N+1 requête (N = nombre de commande de l'utilisateur)
-                return Ok(listAddress);
+                return Ok(listAddress.Distinct());
             }
             return NotFound();
         }

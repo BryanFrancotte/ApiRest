@@ -80,6 +80,7 @@ namespace ApiRest.Controllers
             if(ModelState.IsValid){
                 Context.Order.Add(newOrder);
                 Context.SaveChanges();
+                return Ok();
             }
             return BadRequest();
         }

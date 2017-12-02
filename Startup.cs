@@ -20,7 +20,7 @@ namespace ApiRest
 {
     public class Startup
     {
-        private const string SecretKey = "needtogetthisfromenvironment"; // faut la changer car c'est super secret
+        private const string SecretKey = "Y@$m!n€01"; // faut la changer car c'est super secret
         private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
         public Startup(IConfiguration configuration)
         {
@@ -94,6 +94,7 @@ namespace ApiRest
                 options.Lockout.AllowedForNewUsers = true;
 
                 // User settings
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzéèàùêABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-";
                 options.User.RequireUniqueEmail = true;
             });
 

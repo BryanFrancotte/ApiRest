@@ -94,7 +94,7 @@ namespace ApiRest
                 options.Lockout.AllowedForNewUsers = true;
 
                 // User settings
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzéèàùêABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzéèàùêABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789- ";
                 options.User.RequireUniqueEmail = true;
             });
 

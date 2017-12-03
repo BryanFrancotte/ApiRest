@@ -20,7 +20,7 @@ namespace ApiRest
 {
     public class Startup
     {
-        private const string SecretKey = "Y@$m!n€01"; // faut la changer car c'est super secret
+        private const string SecretKey = "Y@$m!n€01TopSecret"; // faut la changer car c'est super secret
         private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
         public Startup(IConfiguration configuration)
         {

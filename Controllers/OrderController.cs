@@ -31,6 +31,23 @@ namespace ApiRest.Controllers
             return Ok(listOrder);
         }
 
+        [AllowAnonymous]
+        // GET api/Order/GetAllWithNbItems
+        [HttpGet("GetAllWithNbItems")]
+        public IActionResult GetAllOrderWithNbItems(){
+            var listOrderWithNbItems = Context.Order.Include(o => o.BillingAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
+                                            .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.DepositAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.UserIdOrderNavigation)
+                                            .Include(o => o.Parcel)
+                                            .Include(o => o.Letter)
+                                            .Select( o => new OrderWithNumberItems(){
+                                                Order = o,
+                                                NbItems = (o.Parcel.Count() + o.Letter.Count())
+                                            }).ToList();
+            return Ok(listOrderWithNbItems);
+        }
+
         // GET api/Order/GetAllByUser/{id}
         [HttpGet("GetAllByUser/{userId}")]
         public IActionResult GetAllOrderByUser(string userId){

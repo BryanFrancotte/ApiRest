@@ -31,7 +31,6 @@ namespace ApiRest.Controllers
             return Ok(listOrder);
         }
 
-        [AllowAnonymous]
         // GET api/Order/GetAllWithNbItems
         [HttpGet("GetAllWithNbItems")]
         public IActionResult GetAllOrderWithNbItems(){
@@ -103,6 +102,18 @@ namespace ApiRest.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+
+        //DELETE api/Order/DeleteById/{numOrder}
+        [HttpDelete("DeleteById/{numOrder}")]
+        public IActionResult DeleteOrderById(int numOrder){
+            var orderToDelete = Context.Order.SingleOrDefault(o => o.OrderNumber == numOrder);
+            if(orderToDelete != null){
+                Context.Order.Remove(orderToDelete);
+                Context.SaveChanges();
+                return Ok();
+            }
+            return NotFound(numOrder);
         }
     }
 }

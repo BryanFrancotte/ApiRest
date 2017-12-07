@@ -106,7 +106,7 @@ namespace ApiRest.Controllers
 
         //DELETE api/Order/DeleteById/{numOrder}
         [HttpDelete("DeleteById/{numOrder}")]
-        public IActionResult DeleteOrderById(int numOrder){
+        public IActionResult DeleteOrderById(long numOrder){
             var orderToDelete = Context.Order.SingleOrDefault(o => o.OrderNumber == numOrder);
             if(orderToDelete != null){
                 Context.Order.Remove(orderToDelete);

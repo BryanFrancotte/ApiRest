@@ -47,6 +47,12 @@ namespace ApiRest.Controllers
             return Ok(listOrderWithNbItems);
         }
 
+        // GET api/Order/GetAllNotComfirmWithNbItems
+        [HttpGet("GetAllNotComfirmWithNbItems")]
+        public IActionResult GetAllOrderNotConfirmWithNbItems(){
+            var listOrderNotConfirmWithNbItems = Context.Order.Include()
+        }
+
         // GET api/Order/GetAllByUser/{id}
         [HttpGet("GetAllByUser/{userId}")]
         public IActionResult GetAllOrderByUser(string userId){

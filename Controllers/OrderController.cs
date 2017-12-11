@@ -55,8 +55,9 @@ namespace ApiRest.Controllers
                                             .ToList();
             return Ok(listOrderNotConfirmWithNbItems);
         }
-
-        [HttpGet("GetAllNotComfirmWithNbItems")]
+        
+        // GET api/Order/GetAllComfirmWithNbItems
+        [HttpGet("GetAllComfirmWithNbItems")]
         public IActionResult GetAllOrderConfirmWithNbItems(){
             var listOrderConfirmWithNbItems = Context.Order.Include(o => o.BillingAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
                                             .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)

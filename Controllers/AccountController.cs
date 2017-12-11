@@ -29,11 +29,32 @@ namespace ApiRest.Controllers
                         
                 };
                 IdentityResult result = await _userManager.CreateAsync(newUser,dto.Password);
+                bool userExist = await _roleManager.RoleExistsAsync("USER");
+                if(!userExist){
+                    await _roleManager.CreateAsync(new IdentityRole("USER"));
+                }
+                await _userManager.AddToRoleAsync(newUser, "USER");
                 // TODO: retourner un Created à la place du Ok;
                 return (result.Succeeded)?Ok():(IActionResult)BadRequest();
         }
 
-        [HttpPost("addAdmin")]
+        [HttpPost("AddCoursier")]
+        public async Task<IActionResult> AddCoursier([FromBody]NewUserDTO dto){
+            var newUser = new ApplicationUser{
+                UserName = dto.UserName,
+                Email = dto.Email
+            };
+            IdentityResult result = await _userManager.CreateAsync(newUser, dto.Password);
+            bool coursierExist = await _roleManager.RoleExistsAsync("COURSIER");
+            if(!coursierExist){
+                await _roleManager.CreateAsync(new IdentityRole("COURSIER"));
+            }
+            await _userManager.AddToRoleAsync(newUser, "COURSIER");
+            // TODO: retourner un Created à la place du Ok;
+            return (result.Succeeded)?Ok():(IActionResult)BadRequest();
+        }
+
+        [HttpPost("AddAdmin")]
         public async Task<IActionResult> AddAdmin([FromBody]NewUserDTO dto)
         {
             var newUser=new ApplicationUser{
@@ -45,7 +66,6 @@ namespace ApiRest.Controllers
                 if(!adminExist){
                     await _roleManager.CreateAsync(new IdentityRole("ADMIN"));
                 }
-
                 await _userManager.AddToRoleAsync(newUser,"ADMIN");
 
                 // TODO: retourner un Created à la place du Ok;

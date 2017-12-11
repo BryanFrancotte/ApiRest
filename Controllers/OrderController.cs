@@ -20,17 +20,6 @@ namespace ApiRest.Controllers
         {
         }
 
-        // GET api/Order/GetAllOrderedByDateAsc
-        [HttpGet("GetAllOrderedByDateAsc")]
-        public IActionResult GetAllOrderedByDateAsc(){
-            var listOrder = Context.Order.Include(o => o.BillingAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
-                                            .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
-                                            .Include(o => o.DepositAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
-                                            .Include(o => o.UserIdOrderNavigation)
-                                            .OrderBy(o => o.PickUpDate).ToList();
-            return Ok(listOrder);
-        }
-
         // GET api/Order/GetAllWithNbItems
         [HttpGet("GetAllWithNbItems")]
         public IActionResult GetAllOrderWithNbItems(){
@@ -38,6 +27,7 @@ namespace ApiRest.Controllers
                                             .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
                                             .Include(o => o.DepositAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
                                             .Include(o => o.UserIdOrderNavigation)
+                                            .Include(o => o.CoursierIdOrderNavigation)
                                             .Include(o => o.Parcel)
                                             .Include(o => o.Letter)
                                             .Select( o => new OrderWithNumberItems(){
@@ -50,7 +40,38 @@ namespace ApiRest.Controllers
         // GET api/Order/GetAllNotComfirmWithNbItems
         [HttpGet("GetAllNotComfirmWithNbItems")]
         public IActionResult GetAllOrderNotConfirmWithNbItems(){
-            var listOrderNotConfirmWithNbItems = Context.Order.Include()
+            var listOrderNotConfirmWithNbItems = Context.Order.Include(o => o.BillingAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
+                                            .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.DepositAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.UserIdOrderNavigation)
+                                            .Include(o => o.CoursierIdOrderNavigation)
+                                            .Include(o => o.Parcel)
+                                            .Include(o => o.Letter)
+                                            .Select( o => new OrderWithNumberItems(){
+                                                Order = o,
+                                                NbItems = (o.Parcel.Count() + o.Letter.Count())
+                                            })
+                                            .Where(o => o.Order.State == "NOT_ACCEPTED")
+                                            .ToList();
+            return Ok(listOrderNotConfirmWithNbItems);
+        }
+
+        [HttpGet("GetAllNotComfirmWithNbItems")]
+        public IActionResult GetAllOrderConfirmWithNbItems(){
+            var listOrderConfirmWithNbItems = Context.Order.Include(o => o.BillingAddressNavigation).ThenInclude(a => a.LocalityIdAddressNavigation)
+                                            .Include(o => o.PickUpAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.DepositAddressNavigation).ThenInclude(a=>a.LocalityIdAddressNavigation)
+                                            .Include(o => o.UserIdOrderNavigation)
+                                            .Include(o => o.CoursierIdOrderNavigation)
+                                            .Include(o => o.Parcel)
+                                            .Include(o => o.Letter)
+                                            .Select( o => new OrderWithNumberItems(){
+                                                Order = o,
+                                                NbItems = (o.Parcel.Count() + o.Letter.Count())
+                                            })
+                                            .Where(o => o.Order.State == "ACCEPTED")
+                                            .ToList();
+            return Ok(listOrderConfirmWithNbItems);
         }
 
         // GET api/Order/GetAllByUser/{id}

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net;
 using ApiRest.Models;
+using ApiRest.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +16,11 @@ namespace ApiRest.Controllers
     [Route("api/[controller]")]
     public class OrderController : BaseController
     {
+        FirebaseService _service;
         public OrderController(UserManager<ApplicationUser> uMgr, CoursierWallonDBContext context) 
             : base(uMgr, context)
         {
+            _service = new FirebaseService();
         }
 
         // GET api/Order/GetAllWithNbItems
@@ -112,6 +115,7 @@ namespace ApiRest.Controllers
                     Context.Entry(order).State = EntityState.Modified;
                     try{
                         Context.SaveChanges();
+                        _service.sendFireBaseNotification(order.AndroidToken, "Commande acceptée", "livraison par : " + order.CoursierIdOrderNavigation.UserName);
                         return Ok();
                     }catch(DbUpdateException e){
                         Console.WriteLine(e.Message);//TODO : Géré les acces concurentielle
@@ -139,6 +143,7 @@ namespace ApiRest.Controllers
             if(orderToDelete != null){
                 Context.Order.Remove(orderToDelete);
                 Context.SaveChanges();
+                _service.sendFireBaseNotification(orderToDelete.AndroidToken, "Commande refusée", "Malheureusement nous ne pouvons prendre en charge le colis.");
                 return Ok();
             }
             return NotFound(numOrder);

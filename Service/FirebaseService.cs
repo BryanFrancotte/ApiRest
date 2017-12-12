@@ -4,7 +4,7 @@ namespace ApiRest.Service
 {
     public class FirebaseService
     {
-        private const string FIREBASE_KEY = "AIzaSyC4EgyOto41jWWJpBGmgaIeiDoKO6DqPh4";
+        private const string FIREBASE_KEY = "AIzaSyAY08dLGvOXshxLNhNyLgjd2y7KVlaFRA4";
         private FCMClient _client;
         public FirebaseService (){
             _client = new FCMClient(FIREBASE_KEY);
@@ -16,7 +16,7 @@ namespace ApiRest.Service
                     Body = notificationBody,
                     Title =notificationTitle,
                     Sound = "default",
-                    Color = "#df8001",
+                    Color = "#df8001"
                 }
             };
             var result = await _client.SendMessageAsync(message);

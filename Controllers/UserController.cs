@@ -14,9 +14,11 @@ namespace ApiRest.Controllers
     [Route("api/[controller]")]
     public class UserController : BaseController
     {
-        public UserController(UserManager<ApplicationUser> uMgr, CoursierWallonDBContext context) 
+        private RoleManager<IdentityRole> _roleManager;
+        public UserController(UserManager<ApplicationUser> uMgr, CoursierWallonDBContext context, RoleManager<IdentityRole> roleManager) 
             : base(uMgr, context)
         {
+            _roleManager = roleManager;
         }
 
         // GET api/User/GetAll
@@ -27,11 +29,10 @@ namespace ApiRest.Controllers
         }
 
         // GET api/User/GetAllCoursier
-        // TODO: regarder pour recup par role
         [HttpGet("GetAllCoursier")]
         public IActionResult GetAllCoursier(){
-                var listCoursier = Context.AspNetUsers.ToList();
-                return Ok(listCoursier);
+            var listCouriser = UserManager.GetUsersInRoleAsync("COURSIER");
+            return Ok(listCouriser.Result);
         }
 
         // GET api/User/GetById/{userId}

@@ -11,6 +11,10 @@ namespace ApiRest.Controllers
     public abstract class BaseController : Controller
     {
         private UserManager<ApplicationUser> _uMgr;
+        public UserManager<ApplicationUser> UserManager 
+        {
+            get{ return _uMgr;}
+        }
         private CoursierWallonDBContext _context;
         
         public CoursierWallonDBContext Context

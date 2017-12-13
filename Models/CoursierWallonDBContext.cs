@@ -89,7 +89,6 @@ namespace ApiRest.Models
                 entity.HasOne(d => d.OrderNumberLetterNavigation)
                     .WithMany(p => p.Letter)
                     .HasForeignKey(d => d.OrderNumberLetter)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ORDER_LETTER");
             });
 
@@ -107,6 +106,10 @@ namespace ApiRest.Models
                 entity.HasKey(e => e.OrderNumber);
 
                 entity.ToTable("ORDER");
+
+                entity.Property(e => e.AndroidToken)
+                    .IsRequired()
+                    .HasMaxLength(255);
 
                 entity.Property(e => e.CoursierIdOrder).HasMaxLength(450);
 
@@ -182,7 +185,6 @@ namespace ApiRest.Models
                 entity.HasOne(d => d.UserIdOrderNavigation)
                     .WithMany(p => p.OrderUserIdOrderNavigation)
                     .HasForeignKey(d => d.UserIdOrder)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_USER");
             });
 
@@ -193,7 +195,6 @@ namespace ApiRest.Models
                 entity.HasOne(d => d.OrderNumberParcelNavigation)
                     .WithMany(p => p.Parcel)
                     .HasForeignKey(d => d.OrderNumberParcel)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ORDER_PARCEL");
             });
         }

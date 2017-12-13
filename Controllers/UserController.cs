@@ -29,8 +29,6 @@ namespace ApiRest.Controllers
         }
 
         // GET api/User/GetAllCoursier
-        // TODO: regarder pour recup par role
-        [AllowAnonymous]
         [HttpGet("GetAllCoursier")]
         public IActionResult GetAllCoursier(){
             var listCouriser = UserManager.GetUsersInRoleAsync("COURSIER");

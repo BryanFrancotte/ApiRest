@@ -107,10 +107,6 @@ namespace ApiRest.Models
 
                 entity.ToTable("ORDER");
 
-                entity.Property(e => e.AndroidToken)
-                    .IsRequired()
-                    .HasMaxLength(255);
-
                 entity.Property(e => e.CoursierIdOrder).HasMaxLength(450);
 
                 entity.Property(e => e.DepositDate).HasColumnType("date");

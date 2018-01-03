@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using ApiRest.DTO;
 using ApiRest.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +21,21 @@ namespace ApiRest.Controllers
             : base(uMgr, context)
         {
             _roleManager = roleManager;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("UpdateFirebaseToken")]
+        public async Task<IActionResult> UpdateFirebaseTokenAsync([FromBody] FirebaseTokenDTO dto){
+            ApplicationUser user = await UserManager.FindByIdAsync(dto.UserId);
+            if(user != null){
+                if(user.AndroidToken != dto.AndroidToken){
+                    user.AndroidToken = dto.AndroidToken;
+                    IdentityResult result = await UserManager.UpdateAsync(user);
+                    return (result.Succeeded)?Ok():(IActionResult)BadRequest();
+                }
+                return Ok();
+            }
+            return BadRequest();
         }
 
         // GET api/User/GetAll

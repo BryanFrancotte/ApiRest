@@ -23,6 +23,7 @@ namespace ApiRest.Controllers
             _roleManager = roleManager;
         }
 
+        [AllowAnonymous]
         [HttpPost("UpdateFirebaseToken")]
         public async Task<IActionResult> UpdateFirebaseTokenAsync([FromBody] FirebaseTokenDTO dto){
             ApplicationUser user = await UserManager.FindByIdAsync(dto.UserId);

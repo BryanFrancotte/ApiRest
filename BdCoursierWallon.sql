@@ -1,7 +1,3 @@
-# ApiRest Coursier Wallon
-
-## DataBase
-```SQL
 CREATE TABLE [dbo].[LOCALITY](
 	[LocalityId] [bigint] IDENTITY(1,1) NOT NULL,
 	[Name] [nvarchar](30) NOT NULL,
@@ -118,5 +114,3 @@ CREATE TABLE [dbo].[PARCEL](
 		REFERENCES [dbo].[ORDER] ([OrderNumber])
 			ON DELETE CASCADE
 )	
-```
-***

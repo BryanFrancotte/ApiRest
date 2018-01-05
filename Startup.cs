@@ -20,8 +20,6 @@ namespace ApiRest
 {
     public class Startup
     {
-        private const string SecretKey = "Y@$m!n€01TopSecret"; // faut la changer car c'est super secret
-        private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,18 +27,29 @@ namespace ApiRest
 
         public IConfiguration Configuration { get; }
 
+        //Identity
+        //private const string SecretKey = "Y@$m!n€01TopSecret"; // faut la changer car c'est super secret
+        //private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
+        //==================================================================================================================//
+
+        private string GetSecretKey(){
+            var secretKeySettingOptions = Configuration.GetSection(nameof(SecretKeySettingOptions));
+            return secretKeySettingOptions[nameof(SecretKeySettingOptions.SecretSecuKey)];
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CoursierWallonDBContext>(options =>
-                 options.UseSqlServer(@"Server=tcp:coursierwallon.database.windows.net,1433;Initial Catalog=CoursierWallonDB;Persist Security Info=False;User ID=BryanAdmin;Password=Yasmine1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
-
+                 //options.UseSqlServer(@"Server=tcp:coursierwallon.database.windows.net,1433;Initial Catalog=CoursierWallonDB;Persist Security Info=False;User ID=BryanAdmin;Password=Yasmine1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+                options.UseSqlServer(Configuration.GetConnectionString("CoursierWallonDB")));
             services
                 .AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<CoursierWallonDBContext>()
                 .AddDefaultTokenProviders();
             // config token
             var jwtAppSettingOptions = Configuration.GetSection(nameof(JwtIssuerOptions));
+            var _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetSecretKey()));
             services.Configure<JwtIssuerOptions>(options =>
             {
                 options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];

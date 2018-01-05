@@ -106,6 +106,7 @@ namespace ApiRest.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
         // PUT api/Order/Edit
         [HttpPut("Edit")]
         public IActionResult EditOrder([FromBody]Order order){
@@ -115,7 +116,10 @@ namespace ApiRest.Controllers
                     Context.Entry(order).State = EntityState.Modified;
                     try{
                         Context.SaveChanges();
-                        _service.sendFireBaseNotification(order.AndroidToken, "Commande acceptée", "livraison par : " + order.CoursierIdOrderNavigation.UserName);
+                        string androidToken = order.UserIdOrderNavigation.AndroidToken;
+                        if(androidToken != null){
+                            _service.sendFireBaseNotification(order.UserIdOrderNavigation.AndroidToken, "Commande acceptée", "livraison par : " + order.CoursierIdOrderNavigation.UserName);
+                        }
                         return Ok();
                     }catch(DbUpdateException e){
                         Console.WriteLine(e.Message);//TODO : Géré les acces concurentielle
@@ -139,11 +143,14 @@ namespace ApiRest.Controllers
         //DELETE api/Order/DeleteById/{numOrder}
         [HttpDelete("DeleteById/{numOrder}")]
         public IActionResult DeleteOrderById(long numOrder){
-            var orderToDelete = Context.Order.SingleOrDefault(o => o.OrderNumber == numOrder);
+            var orderToDelete = Context.Order.Include(o => o.UserIdOrderNavigation).SingleOrDefault(o => o.OrderNumber == numOrder);
             if(orderToDelete != null){
                 Context.Order.Remove(orderToDelete);
                 Context.SaveChanges();
-                _service.sendFireBaseNotification(orderToDelete.AndroidToken, "Commande refusée", "Malheureusement nous ne pouvons prendre en charge le colis.");
+                string androidToken = orderToDelete.UserIdOrderNavigation.AndroidToken;
+                if(androidToken != null){
+                    _service.sendFireBaseNotification(androidToken, "Commande refusée", "Malheureusement nous ne pouvons prendre en charge le colis.");
+                }
                 return Ok();
             }
             return NotFound(numOrder);

@@ -11,6 +11,7 @@ namespace ApiRest.Models
         public DateTime? BirthDate { get; set; }
         public long? AddressIdUser { get; set; }
         public byte[] VerCol { get; set; }
+        public string AndroidToken { get; set; }
         public Address AddressIdUserNavigation { get; set; }
         [JsonIgnore]
         [IgnoreDataMember]

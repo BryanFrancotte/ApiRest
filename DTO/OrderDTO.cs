@@ -1,16 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using ApiRest.Models;
 
-namespace ApiRest.Models
+namespace ApiRest.DTO
 {
-    public partial class Order
+    public class OrderDTO
     {
-        public Order()
-        {
-            Letter = new HashSet<Letter>();
-            Parcel = new HashSet<Parcel>();
-        }
-
         public long OrderNumber { get; set; }
         public string State { get; set; }
         public DateTime PickUpDate { get; set; }
@@ -30,10 +25,10 @@ namespace ApiRest.Models
         public long BillingAddress { get; set; }
         public byte[] VerCol { get; set; }
         public Address BillingAddressNavigation { get; set; }
-        public ApplicationUser CoursierIdOrderNavigation { get; set; }
+        public UserDTO CoursierIdOrderNavigation { get; set; }
         public Address DepositAddressNavigation { get; set; }
         public Address PickUpAddressNavigation { get; set; }
-        public ApplicationUser UserIdOrderNavigation { get; set; }
+        public UserDTO UserIdOrderNavigation { get; set; }
         public ICollection<Letter> Letter { get; set; }
         public ICollection<Parcel> Parcel { get; set; }
     }

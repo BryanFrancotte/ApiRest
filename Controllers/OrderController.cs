@@ -106,6 +106,7 @@ namespace ApiRest.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
         // PUT api/Order/Edit
         [HttpPut("Edit")]
         public IActionResult EditOrder([FromBody]Order order){
@@ -115,7 +116,10 @@ namespace ApiRest.Controllers
                     Context.Entry(order).State = EntityState.Modified;
                     try{
                         Context.SaveChanges();
-                        _service.sendFireBaseNotification("coucou", "Commande acceptée", "livraison par : " + order.CoursierIdOrderNavigation.UserName);
+                        string androidToken = order.UserIdOrderNavigation.AndroidToken;
+                        if(androidToken != null){
+                            _service.sendFireBaseNotification(order.UserIdOrderNavigation.AndroidToken, "Commande acceptée", "livraison par : " + order.CoursierIdOrderNavigation.UserName);
+                        }
                         return Ok();
                     }catch(DbUpdateException e){
                         Console.WriteLine(e.Message);//TODO : Géré les acces concurentielle
@@ -143,8 +147,10 @@ namespace ApiRest.Controllers
             if(orderToDelete != null){
                 Context.Order.Remove(orderToDelete);
                 Context.SaveChanges();
-                
-                _service.sendFireBaseNotification(orderToDelete.UserIdOrderNavigation.AndroidToken, "Commande refusée", "Malheureusement nous ne pouvons prendre en charge le colis.");
+                string androidToken = orderToDelete.UserIdOrderNavigation.AndroidToken;
+                if(androidToken != null){
+                    _service.sendFireBaseNotification(androidToken, "Commande refusée", "Malheureusement nous ne pouvons prendre en charge le colis.");
+                }
                 return Ok();
             }
             return NotFound(numOrder);

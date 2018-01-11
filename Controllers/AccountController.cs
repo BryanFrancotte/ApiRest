@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using ApiRest.DTO;
@@ -23,19 +24,27 @@ namespace ApiRest.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]NewUserDTO dto)
         {
-                var newUser=new ApplicationUser{
-                        UserName=dto.UserName,
-                        Email = dto.Email
-                        
-                };
-                IdentityResult result = await _userManager.CreateAsync(newUser,dto.Password);
-                bool userExist = await _roleManager.RoleExistsAsync("USER");
-                if(!userExist){
-                    await _roleManager.CreateAsync(new IdentityRole("USER"));
+            using(var contextTransaction = _context.Database.BeginTransaction()){
+                try{
+                    var newUser=new ApplicationUser{
+                            UserName=dto.UserName,
+                            Email = dto.Email
+                            
+                    };
+                    IdentityResult result = await _userManager.CreateAsync(newUser,dto.Password);
+                    bool userExist = await _roleManager.RoleExistsAsync("USER");
+                    if(!userExist){
+                        await _roleManager.CreateAsync(new IdentityRole("USER"));
+                    }
+                    await _userManager.AddToRoleAsync(newUser, "USER");
+                    // TODO: retourner un Created à la place du Ok;
+                    contextTransaction.Commit();
+                    return (result.Succeeded)?Ok():(IActionResult)BadRequest();
+                }catch(Exception){
+                    contextTransaction.Rollback();
+                    return StatusCode(500);
                 }
-                await _userManager.AddToRoleAsync(newUser, "USER");
-                // TODO: retourner un Created à la place du Ok;
-                return (result.Succeeded)?Ok():(IActionResult)BadRequest();
+            }
         }
 
         [HttpPost("AddCoursier")]
